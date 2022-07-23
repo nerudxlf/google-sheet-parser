@@ -1,5 +1,7 @@
 # System for receiving and displaying data from Google Spreadsheets
 
+https://docs.google.com/spreadsheets/d/1vuCZvE1GzgPkxYAf_c1P_51jwUcWn5WBLS6j8BFb0k0/edit#gid=0
+
 The system consists of a parser, a microservice for adding data to the database, a web-api service for receiving data from the database, and a web interface.
 
 ### Parser-service 
@@ -19,4 +21,3 @@ Has the following methods:
 * GET /api/data/ - to get the whole table
 * GET /api/total/ - receives the full dollar amount
 * GET /api/per_day/ - receives distribution by day
-
