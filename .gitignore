@@ -1,0 +1,9 @@
+.idea
+__pycache__
+.env
+venv
+node_modules
+docker-compose.yml
+*.log
+secret.json
+token.pickle

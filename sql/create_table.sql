@@ -1,0 +1,7 @@
+CREATE TABLE data(
+    data_id INTEGER PRIMARY KEY,
+    order_num INTEGER NOT NULL,
+    price_dollar CHARACTER VARYING NOT NULL,
+    price_rub CHARACTER VARYING NOT NULL,
+    date DATE NOT NULL
+)

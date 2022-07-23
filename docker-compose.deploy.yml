@@ -1,0 +1,87 @@
+version: '3.9'
+
+services:
+  parser-service:
+    container_name: parser-service
+    build:
+      context: parser-service/
+      dockerfile: Dockerfile
+    working_dir: /home/app/parser-service
+    volumes:
+      - /home/google-sheet-parser/parser-service:/home/app/parser-service
+    command: python main.py
+    ports: ['5005:8001']
+    environment:
+      DEBUG: 1
+    depends_on:
+      - front-end
+    restart: on-failure
+
+  data-microservice:
+    container_name: data-microservice
+    build:
+      context: data-microservice/
+      dockerfile: Dockerfile
+    working_dir: /home/app/data-microservice
+    volumes:
+      - /home/google-sheet-parser/data-microservice:/home/app/data-microservice
+    command: uvicorn main:app --host 0.0.0.0 --port 8002 --reload
+    ports: ['5002:8002']
+    environment:
+      DEBUG: 1
+    depends_on:
+      - front-end
+    restart: on-failure
+
+  api-service:
+    container_name: api-service
+    build:
+      context: api-service/
+      dockerfile: Dockerfile
+    working_dir: /home/app/api-service
+    volumes:
+      - /home/google-sheet-parser/api-service:/home/app/api-service
+    command: uvicorn main:app --host 0.0.0.0 --port 8003 --reload
+    ports: ['5003:8003']
+    environment:
+      DEBUG: 1
+    depends_on:
+      - front-end
+    restart: on-failure
+
+  front-end:
+    container_name: front-end
+    build:
+      context: front-end/
+      dockerfile: Dockerfile
+    working_dir: /home/app/front-end
+    volumes:
+      - /home/google-sheet-parser/front-end:/home/app/front-end
+    command: npm run start
+    ports: ['5000:3000']
+  
+  postgres:
+    container_name: postgres
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_USER=test
+      - POSTGRES_DB=test
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports: ['5004:5432']
+    volumes:
+      - /home/google-sheet-parser/sql/create_table.sql:/docker-entrypoint-initdb.d/create_tables.sql
+
+  proxy-service:
+    container_name: proxy-service
+    build:
+      context: nginx/
+      dockerfile: Dockerfile
+    volumes:
+      - /home/google-sheet-parser/nginx/:/etc/nginx/
+    ports: ['80:80']
+
